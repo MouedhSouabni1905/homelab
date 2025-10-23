@@ -37,6 +37,8 @@ function procedure() {
   # Configures dhcp server
   rm /etc/dhcpd.conf
   cp ./dhcpd.conf.example /etc/dhcp/dhcpd.conf
+  systemctl enable dhcpd
+  systemctl start dhcpd
 
   rm /etc/resolv.conf
   echo "nameserver 198.168.10.173" > /etc/resolv.conf
