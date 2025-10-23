@@ -17,7 +17,7 @@ function procedure() {
 
   # Add a static ip to the device on the interface
   # that will be the gateway of the internal network
-  ip addr add "$routerIP" dev "$internalNet"
+  ip addr add $routerIP dev $internalNet
 
   # We append a rule to the nat table that handles
   # outgoing packets, by masquerading the src address
