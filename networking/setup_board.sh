@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# run with sudo -E
+
+
 function procedure() {
   
 # Install the required dependency (Fedora-specific)
