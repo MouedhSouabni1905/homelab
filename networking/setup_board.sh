@@ -7,6 +7,7 @@ function procedure() {
   
 # Install the required dependency (Fedora-specific)
   dnf install dhcp-server
+  dnf install iptables-services
 
   routerIP=$1
   externalNet=$2
@@ -20,8 +21,16 @@ function procedure() {
 
   # Add a static ip to the device on the interface
   # that will be the gateway of the internal network
-  ip addr add $routerIP dev $internalNet
+nmcli connection add save yes connection.type "802-3-ethernet" connection.id "Board eth" connection.interface-name "$internalNet" ipv4.addresses "$routerIP"
+nmcli connection modify "Board eth" ipv4.method shared ipv4.addresses 198.168.10.1/24
+nmcli connection up "Board eth"
 
+nmcli connection modify "NUMERICABLE-92B4" ipv4.dns "198.168.10.173"
+nmcli connection modify "NUMERICABLE-92B4" ipv4.ignore-auto-dns yes
+nmcli connection down "NUMERICABLE-92B4"
+nmcli connection up "NUMERICABLE-92B4"
+
+  systemctl enable iptables
   # We append a rule to the nat table that handles
   # outgoing packets, by masquerading the src address
   # of the packet as the device's address on the external network
@@ -35,11 +44,12 @@ function procedure() {
   iptables -A FORWARD -i "$externalNet" -o "$internalNet" -m state --state RELATED,ESTABLISHED -j ACCEPT
   
   # Same thing but without a condition
-  iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+  iptables -A FORWARD -i "$internalNet" -o "$externalNet" -j ACCEPT
 
+  iptables-save
   # Configures dhcp server
   rm /etc/dhcpd.conf
-  cp ./dhcpd.conf.example /etc/dhcp/dhcpd.conf
+  cp ./dhcpd.conf /etc/dhcp/dhcpd.conf
   systemctl enable dhcpd
   systemctl start dhcpd
 
