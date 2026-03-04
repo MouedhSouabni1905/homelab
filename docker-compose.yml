@@ -1,5 +1,75 @@
 services:
+  pihole:
+    image: pihole/pihole:latest
+    environment:
+      TZ: 'Europe/Paris'
+      FTLCONF_webserver_api_password: 'admin'
+      FTLCONF_dns_listeningMode: 'ALL'
+    volumes:
+      - './etc-pihole:/etc/pihole'
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    networks:
+      - homelab
   portfolio:
     build: ./portfolio
+    networks:
+      - homelab
+    #ports:
+     # - 8081:80
+  reverse_proxy:
+    image: caddy:latest
+    restart: unless-stopped
     ports:
-      - 80:80
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - $PWD/caddy_conf:/etc/caddy
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - homelab
+  db:
+    image: mariadb:10.11
+    container_name: seafile-mysql
+    env_file: ".env_db"
+    environment:
+      - MYSQL_LOG_CONSOLE=true
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - /opt/seafile-mysql/db:/var/lib/mysql  # Required, specifies the path to MySQL data persistent store.
+    networks:
+      - homelab
+
+  memcached:
+    image: memcached:1.6.18
+    container_name: seafile-memcached
+    entrypoint: memcached -m 256
+    networks:
+      - homelab
+         
+  seafile:
+    image: seafileltd/seafile-mc:10.0-latest
+    container_name: seafile
+    volumes:
+      - /opt/seafile-data:/shared   # Required, specifies the path to Seafile data persistent store.
+    env_file: ".env_seafile"
+    environment:
+      - DB_HOST=db
+      - SEAFILE_SERVER_LETSENCRYPT=false   # Whether to use https or not.
+   #  - SEAFILE_SERVER_HOSTNAME=docs.seafile.com # Specifies your host name if https is enabled.
+    depends_on:
+      - db
+      - memcached
+    networks:
+      - homelab
+
+networks:
+  homelab:
+volumes:
+  caddy_data:
+  caddy_config:

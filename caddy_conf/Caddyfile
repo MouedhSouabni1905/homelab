@@ -1,0 +1,11 @@
+lubbarbarek.ddns.net {
+    reverse_proxy portfolio:80
+}
+
+file-lubbarbarek.duckdns.org {
+    reverse_proxy seafile:80
+}
+
+pihole-lubbarbarek.duckdns.org {
+    reverse_proxy pihole:80/admin
+}

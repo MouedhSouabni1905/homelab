@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./modules/wireguard.nix
     ];
 
   # Bootloader.
@@ -67,6 +68,7 @@
     curl
     git
     htop
+    noip
   ];
 
  # services.logind = {
@@ -77,21 +79,32 @@
   services.logind.settings.Login.HandleLidSwitch = "ignore";
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
- # services.duckdns = {
- #   enable = true;
- #   domains = [ "lubbarbarek" ];
- #   tokenFile = /home/lubbarbarek/.token_duckdns;
- # };
-
   services.tailscale = {
-    enable = true;
-    useRoutingFeatures = "server";
+    enable = false;
   };
 
   services.thermald.enable = true;
   services.tlp.enable = true;
 
   virtualisation.docker.enable = true;
+
+#  services.duckdns = {
+#    enable = true;
+#    domains = [ "file-lubbarbarek" "pihole-lubbarbarek" ];
+#    tokenFile = /home/lubbarbarek/.token_duckdns;
+#  };
+
+services.resolved = {
+  enable = false;
+  fallbackDns = [
+    "1.1.1.1"
+    "1.0.0.1"
+    "8.8.8.8"
+    "8.8.4.4"
+  ];
+};
+
+# networking.nameservers = [ "127.0.0.1" "1.1.1.1" ];
 
   services.openssh = {
     enable = true;
@@ -119,8 +132,9 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 443 80 ];
-  networking.firewall.allowedUDPPorts = [ 443 ];
+  networking.firewall.allowedTCPPorts = [ 22 53 443 80 8080 8081 8082 ];
+  networking.firewall.allowedUDPPorts = [ 443 53 51820 41697 ];
+boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
