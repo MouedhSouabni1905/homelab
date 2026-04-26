@@ -31,6 +31,7 @@ Refs:
 - https://gitlab.com/xavki/kubernetes-tutorials-new-version/-/blob/main/045-kubeadm-master-init
 - https://www.youtube.com/watch?v=quNfkAe00ZI
 ## Set up kubernetes cluster
+- On the control plane node:
 After running the following command (the addresses might change):
 ```
 sudo kubeadm init --apiserver-advertise-address=192.168.50.1 --apiserver-cert-extra-sans=192.168.50.1 --node-name=yorozuya --pod-network-cidr=10.200.0.0/16 --service-cidr=10.201.0.0/16 --control-plane-endpoint=192.168.50.1
@@ -65,3 +66,5 @@ Then you can join any number of worker nodes by running the following on each as
 kubeadm join 192.168.50.1:6443 --token nehglv.wbnlrzszvhfzh0y1 \
 	--discovery-token-ca-cert-hash sha256:6addf69a32b540d5eb624c7165c36039e193eb6a0e1951054958a86f33aa8e1a
 ```
+- On worker node:
+
