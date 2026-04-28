@@ -38,4 +38,15 @@ sudo kubeadm init --apiserver-advertise-address=192.168.50.1 --apiserver-cert-ex
 ```
 - On worker node:
 First run this on the control plane: `kubeadm token create --print-join-command`
-Then copy and paste the resulting command and run it on each worker node
+Then copy and paste the resulting command and run it on each worker node.
+
+Kubernetes needs a CNI plugin to make Pod networking work, Calico is one of the common choices:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+kubectl taint nodes yorozuya node-role.kubernetes.io/control-plane:NoSchedule-
+kubectl taint nodes yorozuya node-role.kubernetes.io/not-ready:NoSchedule-
+kubectl taint nodes shinsengumi node-role.kubernetes.io/not-ready:NoSchedule-
+```
+For the last 3 commands, check with `kubectl get nodes <node-name> -o json | jq '.spec.taints'` and adapt accordingly it might not be exactly like this. 
+Refs:
+- https://www.perplexity.ai/search/9fc420ae-448f-427e-a517-04cc146dbbe1
