@@ -1,0 +1,5 @@
+- name: Setup firewall using nftables
+  hosts: homelab
+  become: true
+  roles:
+    - nftables

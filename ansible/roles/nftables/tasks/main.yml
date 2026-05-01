@@ -1,0 +1,9 @@
+- name: Install nftables
+  ansible.builtin.apt:
+    name: nftables
+    state: present
+    update_cache: yes
+  become: true
+
+- name: 
+

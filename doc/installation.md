@@ -36,7 +36,7 @@ Run the following command (the addresses might change):
 ```
 sudo kubeadm init --apiserver-advertise-address=192.168.50.1 --apiserver-cert-extra-sans=192.168.50.1 --node-name=yorozuya --pod-network-cidr=10.200.0.0/16 --service-cidr=10.201.0.0/16 --control-plane-endpoint=192.168.50.1
 ```
-- On worker node:
+- On worker nodes:
 First run this on the control plane: `kubeadm token create --print-join-command`
 Then copy and paste the resulting command and run it on each worker node.
 
@@ -50,3 +50,20 @@ kubectl taint nodes shinsengumi node-role.kubernetes.io/not-ready:NoSchedule-
 For the last 3 commands, check with `kubectl get nodes <node-name> -o json | jq '.spec.taints'` and adapt accordingly it might not be exactly like this. 
 Refs:
 - https://www.perplexity.ai/search/9fc420ae-448f-427e-a517-04cc146dbbe1
+## Ansible
+Simply install it on your workstation with your package manager, create a directory and add the servers' hostnames in the `inventory.ini` file under `[homelab]` ("homelab" will be the chose name of the hosts group). Since my SBC (the supervision server) is behind NAT, and I don't want to add tailscale on it (for now) or give it a public IP, I decided to use the other server as a jump host. Ansible uses the ssh configuration to find the hosts specified in the inventory, so you can configure jump hosts in there and it will find it, like I did here:
+```
+Host yorozuya
+Hostname 192.168.0.31
+Port 22
+User saku
+
+Host shinsengumi
+Hostname 192.168.50.173
+Port 22
+User root
+ProxyJump yorozuya
+
+Host *
+	ServerAliveInterval 60
+```
