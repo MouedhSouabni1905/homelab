@@ -1,5 +1,5 @@
 - name: Setup firewall using nftables
-  hosts: homelab
+  hosts: yorozuya
   become: true
   roles:
     - nftables
