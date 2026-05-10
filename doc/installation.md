@@ -48,8 +48,16 @@ kubectl taint nodes yorozuya node-role.kubernetes.io/not-ready:NoSchedule-
 kubectl taint nodes shinsengumi node-role.kubernetes.io/not-ready:NoSchedule-
 ```
 For the last 3 commands, check with `kubectl get nodes <node-name> -o json | jq '.spec.taints'` and adapt accordingly it might not be exactly like this. 
+Tu run kubectl as root:
+```
+sudo mkdir -p /root/.kube
+sudo cp /home/saku/.kube/config /root/.kube/config
+sudo chown root:root /root/.kube/config
+echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /root/.bashrc
+```
 Refs:
 - https://www.perplexity.ai/search/9fc420ae-448f-427e-a517-04cc146dbbe1
+- https://www.perplexity.ai/search/how-do-i-configure-kubectl-so-8hHYnzBTRVqz0nCZZukOCQ
 ## Ansible
 Simply install it on your workstation with your package manager, create a directory and add the servers' hostnames in the `inventory.ini` file under `[homelab]` ("homelab" will be the chose name of the hosts group). Since my SBC (the supervision server) is behind NAT, and I don't want to add tailscale on it (for now) or give it a public IP, I decided to use the other server as a jump host. Ansible uses the ssh configuration to find the hosts specified in the inventory, so you can configure jump hosts in there and it will find it, like I did here:
 ```

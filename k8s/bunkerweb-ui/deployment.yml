@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-ui
+  labels:
+    app: bunkerweb-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bunkerweb-ui
+  template:
+    metadata:
+      labels:
+        app: bunkerweb-ui
+    spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "bunkerweb"
+      securityContext:
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - name: bunkerweb-pv-storage
+          persistentVolumeClaim:
+            claimName: bunkerweb-pv-claim
+        - name: mysql-pv-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+      containers:
+      - name: bw-ui
+        image: bunkerity/bunkerweb-ui:latest
+        envFrom:
+          - configMapRef:
+              name: bw-db-config
+        volumeMounts:
+          - mountPath: "/data"
+            name: bunkerweb-pv-storage
+        # ports:
+        # - containerPort: 7000
+        #   hostPort: 7000
+      - name: bw-db
+        image: mariadb:11
+        envFrom:
+          - configMapRef:
+              name: bw-db-config
+        volumeMounts:
+          - mountPath: "/var/lib/mysql"
+            name: mysql-pv-storage

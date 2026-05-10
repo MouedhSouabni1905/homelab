@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverse-proxy
+  labels:
+    app: bunkerweb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bunkerweb
+  template:
+    metadata:
+      labels:
+        app: bunkerweb
+    spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "bunkerweb"
+      securityContext:
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - name: bunkerweb-pv-storage
+          persistentVolumeClaim:
+            claimName: bunkerweb-pv-claim
+      containers:
+      - name: bunkerweb
+        image: bunkerity/bunkerweb:latest
+        ports:
+        - containerPort: 8080
+          hostPort: 80
+        - containerPort: 8443
+          hostPort: 443
+        env:
+          - name: API_WHITELIST_IP
+            valueFrom:
+              configMapKeyRef:
+                name: bunkerweb-config
+                key: API_WHITELIST_IP
+          - name: DNS_RESOLVERS
+            value: "10.201.0.10"
+      - name: bw-scheduler
+        image: bunkerity/bunkerweb-scheduler:latest
+        envFrom:
+          - configMapRef:
+              name: bunkerweb-config
+        volumeMounts:
+          - mountPath: "/data"
+            name: bunkerweb-pv-storage
