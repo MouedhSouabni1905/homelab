@@ -37,10 +37,10 @@ spec:
           hostPort: 443
         volumeMounts:
           - mountPath: "/etc/caddy"
-            name: pvc-caddy-conf
+            name: conf
           - mountPath: "/srv"
-            name: pvc-caddy-site
+            name: site
           - mountPath: "/data"
-            name: pvc-caddy-data
+            name: data
           - mountPath: "/config"
-            name: pvc-caddy-config
+            name: config
