@@ -14,4 +14,4 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          kubectl apply -k 'kubectl apply -k git@github.com:lubbaragaki/homelab/k8s'
+          kubectl apply -k 'git@github.com:lubbaragaki/homelab/k8s'
