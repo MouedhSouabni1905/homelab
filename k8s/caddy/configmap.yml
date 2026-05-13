@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bunkerweb-config
+  namespace: default
+data:
+  API_WHITELIST_IP: "127.0.0.0/24 10.0.0.0/8 192.168.0.0/24"
+  BUNKERWEB_INSTANCES: "bunkerweb"
+  SERVER_NAME: "web-lubbarbarek.duckdns.org"
+  MULTISITE: "yes"
+  AUTO_LETS_ENCRYPT: "yes"
+  DATABASE_URI: "mariadb+pymysql://bunkerweb:changeme@bw-db-service:3306/db"
+  web-lubbarbarek.duckdns.org_USE_TEMPLATE: "ui"
+  web-lubbarbarek.duckdns.org_USE_REVERSE_PROXY: "yes"
+  web-lubbarbarek.duckdns.org_REVERSE_PROXY_URL: "/"
+  web-lubbarbarek.duckdns.org_REVERSE_PROXY_HOST: "http://bunkerweb-ui-service.default.svc.cluster.local:7000"
+  AUTO_LETS_ENCRYPT_MULTI: "yes"
+  AUTO_LETS_ENCRYPT_DOMAINS: "web-lubbarbarek.duckdns.org"
+  web-lubbarbarek.duckdns.org_LETS_ENCRYPT_CHALLENGE: "dns"
+  web-lubbarbarek.duckdns.org_LETS_ENCRYPT_DNS_PROVIDER: "duckdns"
+  web-lubbarbarek.duckdns.org_LETS_ENCRYPT_DNS_CREDENTIAL_ITEMS: "DuckDNS_Token 1e239da5-8043-4645-bf34-6e86510b5e27"
+  # sub-lubbarbarek.duckdns.org_USE_LETS_ENCRYPT_CERT: "web-lubbarbarek.duckdns.org"
+  DNS_RESOLVERS: "kube-dns.kube-system.svc.cluster.local"

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy
+  labels:
+    app: caddy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caddy
+  template:
+    metadata:
+      labels:
+        app: caddy
+    spec:
+      volumes:
+        - name: conf
+          persistentVolumeClaim:
+            claimName: pvc-caddy-conf
+        - name: site
+          persistentVolumeClaim:
+            claimName: pvc-caddy-site
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc-caddy-data
+        - name: config
+          persistentVolumeClaim:
+            claimName: pvc-caddy-config
+      containers:
+      - name: caddy
+        image: caddy/caddy:latest
+        ports:
+        - containerPort: 80
+          hostPort: 80
+        - containerPort: 443
+          hostPort: 443
+        volumeMounts:
+          - mountPath: "/etc/caddy"
+            name: pvc-caddy-conf
+          - mountPath: "/srv"
+            name: pvc-caddy-site
+          - mountPath: "/data"
+            name: pvc-caddy-data
+          - mountPath: "/config"
+            name: pvc-caddy-config

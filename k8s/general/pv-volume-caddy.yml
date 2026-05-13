@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-caddy-conf
+  labels:
+    type: local
+spec:
+  storageClassName: pv-caddy-conf
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/root/caddy/conf"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-caddy-site
+  labels:
+    type: local
+spec:
+  storageClassName: pv-caddy-site
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/root/caddy/site"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-caddy-data
+  labels:
+    type: local
+spec:
+  storageClassName: pv-caddy-data
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/root/caddy/caddy_data"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-caddy-config
+  labels:
+    type: local
+spec:
+  storageClassName: pv-caddy-config
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/root/caddy/caddy_config"
