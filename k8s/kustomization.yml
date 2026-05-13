@@ -3,5 +3,6 @@ kind: Kustomization
 
 resources:
   - general/
-  - reverse-proxy/
-  - bunkerweb-ui/
+  #- caddy/
+  #- reverse-proxy/
+  #- bunkerweb-ui/
