@@ -47,3 +47,5 @@ spec:
             value: "joplin-data"
           - name: POSTGRES_HOST
             value: "localhost"
+          - name: MAX_TIME_DRIFT
+            value: "0"
