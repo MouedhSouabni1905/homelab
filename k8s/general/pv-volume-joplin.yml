@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-joplin-db-data
+  labels:
+    type: local
+spec:
+  storageClassName: pv-joplin-db-data
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/root/joplin/data/postgres"
