@@ -37,6 +37,8 @@ spec:
         - containerPort: 22300
           hostPort: 22300
         env:
+          - name: APP_BASE_URL
+            value: "http://note-lubbarbarek:22300/"
           - name: APP_PORT
             value: "22300"
           - name: POSTGRES_PASSWORD
@@ -47,5 +49,3 @@ spec:
             value: "joplin-data"
           - name: POSTGRES_HOST
             value: "localhost"
-          - name: MAX_TIME_DRIFT
-            value: "0"
