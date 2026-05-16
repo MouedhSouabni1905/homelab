@@ -27,10 +27,14 @@ spec:
         env:
           - name: POSTGRES_PASSWORD
             value: "changeme"
+          - name: POSTGRES_PORT
+            value: "5432"
           - name: POSTGRES_USER
             value: "joplin"
-          - name: POSTGRES_DB
+          - name: POSTGRES_DATABASE
             value: "joplin-data"
+          - name: PGDATA
+            value: "/var/lib/postgresql/data/pgdata"
       - name: joplin-app
         image: joplin/server:latest
         ports:
@@ -43,9 +47,11 @@ spec:
             value: "22300"
           - name: POSTGRES_PASSWORD
             value: "changeme"
+          - name: POSTGRES_PORT
+            value: "5432"
           - name: POSTGRES_USER
             value: "joplin"
-          - name: POSTGRES_DB
+          - name: POSTGRES_DATABASE
             value: "joplin-data"
           - name: POSTGRES_HOST
             value: "localhost"
