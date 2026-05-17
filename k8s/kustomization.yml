@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - general/
-  - joplin/
+  - vaultwarden/
   #- caddy/
   #- reverse-proxy/
   #- bunkerweb-ui/

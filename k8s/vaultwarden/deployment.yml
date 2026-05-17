@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+  labels:
+    app: vaultwarden
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vaultwarden
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc-vw-data
+      containers:
+      - name: vaultwarden
+        image: vaultwarden/server:latest
+        env:
+          - name: DOMAIN
+            value: "https://vw-lubbarbarek.eu1.netbird.services/"
+        ports:
+        - containerPort: 8000
+          hostPort: 80
+        volumeMounts:
+          - mountPath: "/data/"
+            name: data

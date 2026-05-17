@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-joplin-db-data
+  name: pvc-vw-data
 spec:
-  storageClassName: pv-joplin-db-data
+  storageClassName: pv-vw-data
   accessModes:
     - ReadWriteOnce
   resources:
