@@ -24,6 +24,8 @@ spec:
         env:
           - name: DOMAIN
             value: "https://vw-lubbarbarek.eu1.netbird.services/"
+          - name: ADMIN_TOKEN
+            value: "temporary_token"
         ports:
         - containerPort: 80
           hostPort: 8001
