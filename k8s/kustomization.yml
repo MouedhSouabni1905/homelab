@@ -2,8 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - general/
+  #- general/
   - vaultwarden/
+  - borg-ui/
   #- caddy/
   #- reverse-proxy/
   #- bunkerweb-ui/
