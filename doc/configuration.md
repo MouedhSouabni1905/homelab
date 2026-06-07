@@ -1,6 +1,90 @@
-# Vaultwarden
+# Caddy
+- Install caddy: https://caddyserver.com/docs/install#debian-ubuntu-raspbian
+- Write this configuration to `/etc/caddy/Caddyfile`:
+```
+domain.com {
+	# Set this path to your site's directory.
+	root * /usr/share/caddy
 
-Go to `yourserveraddress/admin` in the browser, log in with `temporary_token` and 
+	# Enable the static file server.
+	file_server
+
+	# Another common task is to set up a reverse proxy:
+	# reverse_proxy localhost:8080
+
+	# Or serve a PHP site through php-fpm:
+	# php_fastcgi localhost:9000
+}
+
+# Refer to the Caddy docs for more information:
+# https://caddyserver.com/docs/caddyfile
+
+vpn.domain.com {
+	reverse_proxy :8080
+}
+```
+
+# VPN
+- Install headscale: https://headscale.net/stable/setup/install/official/ (not the container)
+- Point your domain to the server
+- Copy the contents of the `/configs/headscale/config.yaml` file from the repo to `/etc/headscale/config.yaml` (modify hostnames and dns records accordingly)
+- Add the following configuration to `/etc/headscale/policy.json`:
+```
+{
+  "tagOwners": {
+    "tag:server": ["mimo@"]
+  },
+}
+```
+- Restart the headscale service
+- Keep in mind this is the route to the headscale server, NOT a web UI of the server
+- Create at least one user, which will be used for the tagged devices, basically an admin (doesn't have to be named "admin")
+- Install tailscale on the client nodes and run `tailscale up --login-server <YOUR_HEADSCALE_URL>`
+- In the server, run `tailscale up --login-server <YOUR_HEADSCALE_URL> --advertise-tags tag:server`
+- Follow the instructions to register the node under the right username
+- Congratulations, now you can access the file server at samba.vpn.local from anywhere in the world by connecting to the vpn
+
+# Aliasvault
+
+- You need an MX record with the same domain name as your email domain, meaning an MX record with content `domain.com` pointing to `domain.com` and then configure aliasvault (through the install script) to use that `domain.com` as the email domain, like this:
+```
+root@shinsengumi:~/services/aliasvault# ./install.sh configure-email
+==================================================
+    _    _ _           __      __         _ _
+   / \  | (_) __ _ ___ \ \    / /_ _ _   _| | |_
+  / _ \ | | |/ _` / __| \ \/\/ / _` | | | | | __|
+ / ___ \| | | (_| \__ \  \  / / (_| | |_| | | |_
+/_/   \_\_|_|\__,_|___/   \/  \__,__|\__,_|_|\__|
+
+==================================================
++++ Email Server Configuration +++
+
+About Email Server:
+AliasVault includes a built-in email server for handling virtual email addresses.
+When enabled, it can receive emails for one or more configured domains.
+Each domain must have an MX DNS record pointing to this server's hostname.
+
+Current Configuration:
+Email Server Status: Enabled
+Active Domains: lubbarbarek.com
+
+Email Server Options:
+1) Enable email server / Update domains
+2) Disable email server
+3) Cancel
+
+Select an option [1-3]: 1
+
+Enter domain(s) for email server
+For multiple domains, separate with commas (e.g. domain1.com,domain2.com)
+IMPORTANT: Each domain must have an MX record in DNS pointing to this server.
+Domains: domain.com
+
+You entered the following domains:
+  - domain.com
+
+Are these domains correct? (y/n): y
+```
 
 # Samba (server)
 
