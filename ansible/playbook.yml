@@ -1,5 +1,5 @@
-- name: Setup firewall using nftables
-  hosts: yorozuya
+- name: Setup rpi4 server firewall
+  hosts: shinsengumi
   become: true
   roles:
-    - nftables
+    - firewall

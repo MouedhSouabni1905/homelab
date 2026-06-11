@@ -1,0 +1,53 @@
+- name: Install ufw
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  become: true
+
+- name: UFW - Allow SSH connections from VPN and LAN
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+    src: "{{ item }}"
+  loop:
+    - 100.64.0.0/32
+    - 192.168.0.0/24
+  become: true
+
+- name: UFW - Allow Samba access from VPN
+  community.general.ufw:
+    rule: allow
+    proto: "{{ item.proto }}"
+    port: "{{ item.port }}"
+    src: 100.64.0.0/32
+  loop:
+    - { proto: udp, port: "137" }
+    - { proto: udp, port: "138" }
+    - { proto: tcp, port: "139" }
+    - { proto: tcp, port: "445" }
+  become: true
+
+- name: UFW - Allow DNS, DNS-over-TLS, HTTP, HTTPS and SMTP (STARTTLS)
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  loop:
+    - { proto: udp, port: "53" }
+    - { proto: tcp, port: "53" }
+    - { proto: tcp, port: "853" }
+    - { proto: tcp, port: "80" }
+    - { proto: tcp, port: "443" }
+    - { proto: tcp, port: "587" }
+  become: true
+
+- name: UFW - Enable and deny by default
+  community.general.ufw:
+    state: enabled
+    default: deny
+  become: true
+
+- name: UFW - Reload firewall
+  ansible.builtin.command: ufw reload
+  become: true
