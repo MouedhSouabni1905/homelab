@@ -1,5 +1,0 @@
-- name: Setup rpi4 server firewall
-  hosts: shinsengumi
-  become: true
-  roles:
-    - firewall

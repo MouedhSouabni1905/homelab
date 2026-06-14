@@ -11,7 +11,7 @@
     name: OpenSSH
     src: "{{ item }}"
   loop:
-    - 100.64.0.0/32
+    - 100.64.0.0/10
     - 192.168.0.0/24
   become: true
 
@@ -20,7 +20,7 @@
     rule: allow
     proto: "{{ item.proto }}"
     port: "{{ item.port }}"
-    src: 100.64.0.0/32
+    src: 100.64.0.0/10
   loop:
     - { proto: udp, port: "137" }
     - { proto: udp, port: "138" }
@@ -34,9 +34,9 @@
     port: "{{ item.port }}"
     proto: "{{ item.proto }}"
   loop:
-    - { proto: udp, port: "53" }
-    - { proto: tcp, port: "53" }
-    - { proto: tcp, port: "853" }
+ #  - { proto: udp, port: "53" }
+ #  - { proto: tcp, port: "53" }
+ #  - { proto: tcp, port: "853" }
     - { proto: tcp, port: "80" }
     - { proto: tcp, port: "443" }
     - { proto: tcp, port: "587" }

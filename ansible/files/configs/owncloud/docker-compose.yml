@@ -1,0 +1,23 @@
+services:
+  ocis:
+    image: owncloud/ocis:latest
+    user: root
+    entrypoint:
+      - /bin/sh
+    command: ["-c", "ocis init || true; ocis server"]
+    environment:
+      OCIS_URL: https://cloud.lubbarbarek.com
+      OCIS_LOG_LEVEL: error
+      PROXY_HTTP_ADDR: 0.0.0.0:9200
+      PROXY_TLS: "false"
+      OCIS_INSECURE: "true"
+      IDM_ADMIN_PASSWORD: "${ADMIN_PASSWORD:-admin}"
+      IDM_CREATE_DEMO_USERS: "false"
+    ports:
+      - "8083:9200"
+    volumes:
+      - /opt/containers/ocis/ocis-config:/etc/ocis
+      - /opt/containers/ocis/ocis-data:/var/lib/ocis
+    logging:
+      driver: local
+    restart: always

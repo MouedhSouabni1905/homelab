@@ -1,0 +1,40 @@
+- include_tasks: reset.yml
+  when: reset | default(false)
+
+- name: Configure Caddy
+  ansible.builtin.copy:
+    src: configs/caddy/Caddyfile
+    dest: /etc/caddy/Caddyfile
+
+- name: Copy docker compose files
+  ansible.builtin.copy:
+    src: "configs/{{ item }}/docker-compose.yml"
+    dest: "/root/services/{{ item }}/docker-compose.yml"
+  loop:
+    - owncloud
+
+- name: Copy scripts folder
+  copy:
+    src: scripts # no trailing slash = folder + contents
+    dest: /
+    mode: '0744'
+
+- name: Enable and start services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - smbd
+    - caddy
+  when: reset | default(false)
+
+- name: Restart services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - smbd
+    - caddy
+  when: not (reset | default(false))
+

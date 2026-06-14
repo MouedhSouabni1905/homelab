@@ -1,0 +1,8 @@
+- name: Setup rpi4 server
+  hosts: shinsengumi
+  become: true
+  roles:
+    - firewall
+    - packages
+    - services
+    - system

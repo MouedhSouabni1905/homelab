@@ -1,0 +1,26 @@
+- name: Install Docker
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - docker.io
+    - docker-cli
+    - docker-buildx
+    - docker-compose
+    - docker-doc
+  become: true
+
+- name: Install Caddy reverse proxy
+  ansible.builtin.apt:
+    name: caddy
+    state: present
+    update_cache: yes
+  become: true
+  
+- name: Install samba
+  ansible.builtin.apt:
+    name: samba
+    state: present
+    update_cache: yes
+  become: true

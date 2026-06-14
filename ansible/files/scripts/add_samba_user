@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+SMB_CONF="/etc/samba/smb.conf"
+BASE_DIR="/srv/samba/users"
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 <username>"
+  echo "Description: Script that creates a user and adds his directory and adjusts directory permissions"
+  exit 1
+fi
+PASSWORD="$(openssl rand -base64 32 | tr -d '=')"
+USER_NAME="$1"
+USER_DIR="${BASE_DIR}/${USER_NAME}"
+
+if ! id "$USER_NAME" >/dev/null 2>&1; then
+  echo "User '$USER_NAME' does not exist. Creating user..."
+  useradd -s /bin/bash "$USER_NAME"
+  echo "$USER_NAME:$PASSWORD" | chpasswd
+  printf '%s\n%s\n' "$PASSWORD" "$PASSWORD" | smbpasswd -s -a "$USER_NAME"
+  smbpasswd -e "$USER_NAME"
+  echo "User $USER_NAME created with password '$PASSWORD'"
+fi
+
+if grep -q "^\[$USER_NAME\]" "$SMB_CONF"; then
+  echo "User '$USER_NAME' already exists in Samba config"
+  exit 0
+fi
+
+sudo btrfs subvolume create "$USER_DIR"
+btrfs qgroup limit 50G "$USER_DIR"
+sudo chown "$USER_NAME:$USER_NAME" "$USER_DIR"
+sudo chmod 700 "$USER_DIR"
+sudo usermod -aG sambausers "$USER_NAME"
+cat >> /etc/samba/smb.conf << EOF
+[$USER_NAME]
+   comment = $USER_NAME's personal folder
+   path = $USER_DIR
+   browseable = yes
+   guest ok = no
+   read only = no
+   writable = yes
+   create mask = 0600
+   directory mask = 0700
+   valid users = $USER_NAME
+EOF

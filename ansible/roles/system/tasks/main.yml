@@ -1,0 +1,8 @@
+- include_tasks: reset.yml
+  when: reset | default(false)
+
+- name: Ensure the aliasvault smtp tls certificates are up to date
+  ansible.builtin.cron:
+    name: "Copy tls certificate to aliasvault certificates"
+    special_time: "hourly"
+    job: "cp /var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/lubbarbarek.com/lubbarbarek.com.crt /root/services/aliasvault/certificates/smtp/cert.pem"

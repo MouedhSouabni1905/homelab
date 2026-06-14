@@ -1,0 +1,34 @@
+- name: Create service directories
+  ansible.builtin.file:
+    path: "/root/services/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - aliasvault
+    - microbin
+    - owncloud
+  become: true
+
+- name: Download aliasvault install script
+  ansible.builtin.get_url:
+    url: https://github.com/aliasvault/aliasvault/releases/latest/download/install.sh
+    dest: /root/services/aliasvault/install.sh
+    mode: '0744'
+
+- name: Download microbin install script
+  ansible.builtin.get_url:
+    url: https://microbin.eu/docker.sh
+    dest: /root/services/microbin/docker.sh
+    mode: '0744'
+
+- name: Download Tailscale client install script
+  ansible.builtin.get_url:
+    url: https://tailscale.com/install.sh
+    dest: /root/ts_install.sh
+    mode: '0744'
+
+- name: Configure Samba
+  ansible.builtin.copy:
+    src: configs/samba/smb.conf
+    dest: /etc/samba/smb.conf
+

@@ -1,0 +1,16 @@
+- name: Ensure group "sambausers" exists
+  ansible.builtin.group:
+    name: sambausers
+    state: present
+
+- name: Enable btrfs quota for samba
+  ansible.builtin.shell: |
+    btrfs quota enable --simple /srv/samba
+
+- name: Create the /srv/samba/users directory
+  ansible.builtin.file:
+    path: /srv/samba/users
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
