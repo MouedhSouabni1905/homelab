@@ -6,3 +6,35 @@
     name: "Copy tls certificate to aliasvault certificates"
     special_time: "hourly"
     job: "cp /var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/lubbarbarek.com/lubbarbarek.com.crt /root/services/aliasvault/certificates/smtp/cert.pem"
+
+- name: Configure ethernet connection with static IP
+  community.general.nmcli:
+    conn_name: "eth0"
+    ifname: "eth0"
+    type: ethernet
+    state: present
+    autoconnect: yes
+    ip4: "192.168.0.13"
+    gw4: "192.168.0.1" 
+    dns4: "192.168.0.1"
+    method4: manual          
+  become: true
+
+- name: Copy systemd service file (rpi network bug fix)
+  copy:
+    src: configs/eth_fix.service
+    dest: /etc/systemd/system/eth_fix.service
+    mode: '0644'
+
+- name: Copy systemd timer file (rpi network bug fix)
+  copy:
+    src: configs/eth_fix.timer
+    dest: /etc/systemd/system/eth_fix.timer
+    mode: '0644'
+
+- name: Start and enable rpi network bug fix service
+  systemd_service:
+    name: eth_fix
+    state: started
+    enabled: true
+    daemon_reload: true

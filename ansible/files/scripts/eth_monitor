@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+BASEDIR=$(dirname "$0")
+now=$(date)
+if ping -q -c 1 -W 1 google.com >/dev/null; then
+  echo "$now : The network is up" >> $BASEDIR/eth.log
+else
+  ethtool --set-eee eth0 eee off
+  ethtool -r eth0
+  echo "$now : Network down. Trying to restart eth0" >> $BASEDIR/eth.log
+fi

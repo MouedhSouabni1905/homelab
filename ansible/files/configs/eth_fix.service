@@ -1,0 +1,11 @@
+[Unit]
+Description=Monitor
+
+[Service]
+Type=simple
+ExecStart=/scripts/eth_monitor
+Restart=always
+RestartSec=500
+
+[Install]
+WantedBy=timers.target

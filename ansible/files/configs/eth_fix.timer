@@ -1,0 +1,9 @@
+[Unit]
+Description=Monitor
+
+[Timer]
+OnUnitActiveSec=200s
+OnBootSec=100s
+
+[Install]
+WantedBy=timers.target
