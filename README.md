@@ -147,6 +147,7 @@ zram0  254:0    0     2G  0 disk [SWAP]
 
 Run `apt install -y btrfs-progs`.
 Now we will configure our btrfs filesystem. Enable compression on it and create a subvolume which will be used by samba.
+```
 root@shinsengumi:~# btrfs property set /srv compression zstd
 root@shinsengumi:~# btrfs property get /srv compression
 compression=zstd
